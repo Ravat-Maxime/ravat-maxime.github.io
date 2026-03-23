@@ -1,81 +1,556 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>Mon Blog</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-  </head>
-  <body>
-    <div id="header">
-      <div class="container">
-        <a id="header-title" href="index.html">My Blog</a>
-        <ul id="header-nav">
-          <li>
-            <a href="about.html">About</a>
-          </li>
-          <li>
-            <a href="mailto:ravat.maxime@gmail.com">email me</a>
-          </li>
-        </ul>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire — Brief de création web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1a1a;--paper:#f7f5f0;--warm:#e8e4dc;
+  --accent:#c45d3e;--accent-light:#f0d5cc;--accent-dark:#a04a30;
+  --muted:#8a8478;--card:#fff;--radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  --shadow-lg:0 4px 20px rgba(0,0,0,.08);
+  --font-body:'DM Sans',sans-serif;--font-display:'Fraunces',serif;
+  --transition:.2s cubic-bezier(.4,0,.2,1);
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.6}
+.app{max-width:860px;margin:0 auto;padding:20px 16px 100px}
+
+/* Header */
+.header{text-align:center;padding:48px 20px 40px}
+.header h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.header p{color:var(--muted);font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.6}
+
+/* Progress */
+.progress-bar{position:sticky;top:0;z-index:100;background:var(--paper);padding:12px 0 8px;border-bottom:1px solid var(--warm)}
+.progress-track{height:4px;background:var(--warm);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.progress-label{font-size:.75rem;color:var(--muted);text-align:right}
+
+/* Nav */
+.nav-pills{display:flex;gap:6px;overflow-x:auto;padding:12px 0 20px;scrollbar-width:none;-ms-overflow-style:none}
+.nav-pills::-webkit-scrollbar{display:none}
+.nav-pill{flex-shrink:0;padding:8px 14px;border-radius:99px;border:1.5px solid var(--warm);background:transparent;font-family:var(--font-body);font-size:.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all var(--transition);white-space:nowrap}
+.nav-pill:hover{border-color:var(--accent);color:var(--ink)}
+.nav-pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav-pill.has-data{border-color:var(--accent-light);color:var(--ink)}
+
+/* Sections */
+.section{background:var(--card);border-radius:var(--radius);padding:32px 28px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--warm)}
+.section-icon{font-size:1.5rem}
+.section-title{font-family:var(--font-display);font-size:1.35rem;font-weight:600}
+
+/* Questions */
+.question{margin-bottom:24px}
+.question:last-child{margin-bottom:0}
+.question-label{display:block;font-weight:600;font-size:.88rem;margin-bottom:8px}
+.question-hint{display:block;font-size:.78rem;color:var(--muted);margin-bottom:8px;font-weight:400;font-style:italic}
+
+input[type="text"],textarea{width:100%;padding:12px 14px;border:1.5px solid var(--warm);border-radius:8px;font-family:var(--font-body);font-size:.88rem;color:var(--ink);background:var(--paper);transition:border-color var(--transition),box-shadow var(--transition);resize:vertical;outline:none}
+input[type="text"]:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+textarea{min-height:80px}
+textarea.small{min-height:56px}
+
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 16px;border-radius:99px;border:1.5px solid var(--warm);background:transparent;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all var(--transition);user-select:none}
+.chip:hover{border-color:var(--accent);background:var(--accent-light)}
+.chip.selected{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
+/* File upload */
+.file-upload-zone{border:2px dashed var(--warm);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all var(--transition);background:var(--paper);position:relative}
+.file-upload-zone:hover{border-color:var(--accent);background:var(--accent-light)}
+.file-upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.file-upload-icon{font-size:1.8rem;margin-bottom:6px}
+.file-upload-text{font-size:.82rem;color:var(--muted)}
+.file-preview{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--paper);border-radius:10px;border:1.5px solid var(--warm)}
+.file-preview img{width:56px;height:56px;object-fit:contain;border-radius:6px;background:#fff;border:1px solid var(--warm)}
+.file-preview-info{flex:1}
+.file-preview-name{font-size:.85rem;font-weight:600;word-break:break-all}
+.file-preview-size{font-size:.75rem;color:var(--muted)}
+.file-remove{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px;transition:all var(--transition)}
+.file-remove:hover{color:var(--accent);background:var(--accent-light)}
+
+/* Color picker */
+.color-picker-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.color-swatch-wrapper{display:flex;flex-direction:column;align-items:center;gap:6px}
+.color-swatch{width:48px;height:48px;border-radius:50%;border:2.5px solid var(--warm);cursor:pointer;transition:all var(--transition);position:relative;overflow:hidden}
+.color-swatch:hover{transform:scale(1.1);border-color:var(--accent);box-shadow:var(--shadow)}
+.color-swatch.empty{background:var(--paper)}
+.color-swatch input[type="color"]{position:absolute;inset:-8px;width:64px;height:64px;opacity:0;cursor:pointer}
+.color-hex-label{font-size:.68rem;color:var(--muted);letter-spacing:.02em}
+
+/* Repeater (services) */
+.repeater-item{border:1.5px solid var(--warm);border-radius:10px;padding:20px;margin-bottom:12px;background:var(--paper);position:relative;transition:all var(--transition)}
+.repeater-item:hover{border-color:var(--accent-light)}
+.repeater-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.repeater-row.full{grid-template-columns:1fr}
+.repeater-remove{position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px;transition:all var(--transition)}
+.repeater-remove:hover{color:var(--accent);background:var(--accent-light)}
+.repeater-label{font-size:.78rem;font-weight:500;color:var(--muted);margin-bottom:4px;display:block}
+.repeater-add{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:99px;border:1.5px dashed var(--warm);background:transparent;font-family:var(--font-body);font-size:.82rem;color:var(--muted);cursor:pointer;transition:all var(--transition)}
+.repeater-add:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Buttons */
+.actions{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:32px;padding-top:24px;border-top:1px solid var(--warm)}
+.btn{padding:12px 28px;border-radius:99px;font-family:var(--font-body);font-size:.88rem;font-weight:600;cursor:pointer;transition:all var(--transition);border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.btn-secondary{background:transparent;border:1.5px solid var(--warm);color:var(--ink)}
+.btn-secondary:hover{border-color:var(--accent)}
+.btn-ghost{background:transparent;color:var(--muted);padding:12px 16px}
+.btn-ghost:hover{color:var(--accent)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 24px;border-radius:99px;font-size:.85rem;font-weight:500;box-shadow:var(--shadow-lg);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:1000}
+.toast.visible{transform:translateX(-50%) translateY(0)}
+
+/* Thank you screen */
+.thankyou{text-align:center;padding:80px 20px}
+.thankyou h2{font-family:var(--font-display);font-size:2rem;margin-bottom:16px}
+.thankyou p{color:var(--muted);font-size:1rem;max-width:440px;margin:0 auto 32px;line-height:1.7}
+.thankyou .check{font-size:4rem;margin-bottom:20px;display:block}
+
+@media(max-width:600px){
+  .section{padding:24px 18px}
+  .actions{flex-direction:column}
+  .btn{width:100%;justify-content:center}
+  .repeater-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast">✓ Fichier téléchargé !</div>
+
+<script>
+// ─── DATA MODEL ───
+const SECTIONS = [
+  {
+    id:"identite", title:"Identité & Contexte", icon:"🏢",
+    questions:[
+      {id:"nom_entreprise",label:"Nom de l'entreprise / du projet",type:"text",placeholder:"Ex : Studio Lumière"},
+      {id:"secteur",label:"Secteur d'activité",type:"text",placeholder:"Ex : Architecture d'intérieur, E-commerce, Conseil RH…"},
+      {id:"description",label:"Décrivez votre activité en 2-3 phrases",type:"textarea",placeholder:"Ce que vous faites, pour qui, et ce qui vous distingue…"},
+      {id:"cible",label:"Qui est votre cible principale ?",type:"textarea",placeholder:"Ex : Dirigeants de PME, particuliers 25-40 ans, investisseurs internationaux…"},
+      {id:"valeurs",label:"Quelles valeurs souhaitez-vous transmettre ?",type:"chips",options:["Innovation","Fiabilité","Proximité","Luxe","Simplicité","Expertise","Transparence","Écologie","Créativité","Performance"],multi:true},
+      {id:"valeurs_comment",label:"Précisions sur vos valeurs",type:"textarea",placeholder:"Complétez ou ajoutez d'autres valeurs…",small:true},
+    ]
+  },
+  {
+    id:"services", title:"Services & Prestations", icon:"💼",
+    intro:"Listez les services ou produits que vous proposez. Ces informations structureront le contenu de votre site.",
+    questions:[
+      {id:"services_list",label:"Vos services / prestations",type:"repeater",hint:"Ajoutez chaque service un par un — soyez le plus précis possible.",
+        fields:[
+          {id:"nom",label:"Nom du service",type:"text",placeholder:"Ex : Création d'entreprise, Coaching individuel…"},
+          {id:"description",label:"Description courte",type:"textarea",placeholder:"En 1-2 phrases, que comprend ce service ?",small:true},
+          {id:"cible_service",label:"Pour qui ?",type:"text",placeholder:"Ex : PME, startups, particuliers…"},
+          {id:"prix",label:"Tarification",type:"text",placeholder:"Ex : 1 500 CHF, Sur devis, À partir de 99€/mois, Gratuit…"},
+          {id:"prix_mode",label:"Mode de facturation",type:"chips",options:["Forfait fixe","À l'heure","Abonnement mensuel","Sur devis","Gratuit / Freemium","À la commission","Autre"],multi:false},
+        ]
+      },
+      {id:"services_phare",label:"Quel est votre service phare (le plus demandé) ?",type:"textarea",placeholder:"Le service à mettre le plus en avant sur le site…",small:true},
+      {id:"affichage_prix",label:"Souhaitez-vous afficher les prix sur le site ?",type:"chips",options:["Oui, tous les prix visibles","Oui, mais seulement \"à partir de…\"","Non, sur devis uniquement","Mix : certains visibles, d'autres sur devis"],multi:false},
+      {id:"packages",label:"Proposez-vous des packs / formules ?",type:"chips",options:["Oui, plusieurs formules (Basic, Pro…)","Oui, offres personnalisées","Non, tarif unique par service","Pas encore défini"],multi:false},
+      {id:"packages_detail",label:"Détaillez vos formules / packs si applicable",type:"textarea",placeholder:"Noms des formules, ce qui est inclus dans chaque niveau, différences…",small:true},
+      {id:"cta_service",label:"Quelle action principale pour le visiteur ?",type:"chips",options:["Demander un devis","Prendre rendez-vous","Acheter en ligne","Appeler directement","Remplir un formulaire","Télécharger une brochure","S'inscrire / Créer un compte"],multi:true},
+      {id:"services_comment",label:"Autres précisions sur vos services",type:"textarea",placeholder:"Saisonnalité, conditions particulières, zones géographiques…",small:true},
+    ]
+  },
+  {
+    id:"objectifs", title:"Objectifs du site", icon:"🎯",
+    questions:[
+      {id:"objectif_principal",label:"Objectif principal du site",type:"chips",options:["Vitrine / Présence en ligne","Génération de leads","E-commerce / Vente","Portfolio / Showcase","Blog / Média","Application web / SaaS","Site institutionnel","Landing page"],multi:false},
+      {id:"objectifs_secondaires",label:"Objectifs secondaires",type:"chips",options:["SEO / Visibilité Google","Prise de rendez-vous","Collecte d'emails","Support client","Recrutement","Communauté / Forum","Multilingue","Espace membre"],multi:true},
+      {id:"objectifs_comment",label:"Précisions sur vos objectifs",type:"textarea",placeholder:"KPIs attendus, contraintes particulières…",small:true},
+      {id:"site_existant",label:"Avez-vous déjà un site web ?",type:"chips",options:["Non, c'est une création","Oui, refonte complète","Oui, amélioration / évolution"],multi:false},
+      {id:"url_existant",label:"URL du site existant (si applicable)",type:"text",placeholder:"https://…"},
+      {id:"points_forts_faibles",label:"Ce que vous aimez / n'aimez pas sur votre site actuel",type:"textarea",placeholder:"Points forts à conserver, irritants à corriger…",small:true},
+    ]
+  },
+  {
+    id:"contenu", title:"Structure & Contenu", icon:"📐",
+    questions:[
+      {id:"pages",label:"Pages envisagées",type:"chips",options:["Accueil","À propos","Services / Offres","Portfolio / Réalisations","Blog / Actualités","Contact","FAQ","Tarifs","Équipe","Témoignages","Mentions légales","Politique de confidentialité"],multi:true},
+      {id:"pages_custom",label:"Autres pages spécifiques",type:"textarea",placeholder:"Pages supplémentaires non listées ci-dessus…",small:true},
+      {id:"contenu_pret",label:"Quel contenu avez-vous déjà prêt ?",type:"chips",options:["Textes rédigés","Logo & charte graphique","Photos professionnelles","Vidéos","Témoignages clients","Rien pour l'instant"],multi:true},
+      {id:"contenu_comment",label:"Précisions sur le contenu",type:"textarea",placeholder:"Faut-il rédiger les textes ? Faire un shooting photo ? …",small:true},
+      {id:"langues",label:"Langues du site",type:"chips",options:["Français uniquement","Français + Anglais","Français + Anglais + Autre(s)","Anglais uniquement"],multi:false},
+      {id:"langues_detail",label:"Précisez les langues si \"Autre(s)\"",type:"text",placeholder:"Ex : Espagnol, Allemand, Arabe…"},
+    ]
+  },
+  {
+    id:"design", title:"Direction Artistique", icon:"🎨",
+    questions:[
+      {id:"style",label:"Quel style visuel global vous attire ?",type:"chips",options:["Minimaliste & épuré","Corporate & professionnel","Moderne & audacieux","Élégant & luxueux","Chaleureux & humain","Créatif & artistique","Tech & futuriste","Organique & naturel"],multi:true},
+      {id:"style_visuels",label:"Style des visuels / images sur le site",type:"chips",hint:"Comment imaginez-vous les images et illustrations de votre site ?",options:["Photos réalistes (shooting pro)","Photos stock naturelles","Visages humains & portraits","Illustrations vectorielles (SVG)","Icônes flat / ligne fine","Mix photos + icônes","Illustrations 3D","Formes abstraites & géométriques","Sans visuels (typographie seule)","Infographies & data viz"],multi:true},
+      {id:"style_visuels_detail",label:"Précisions sur le style visuel",type:"textarea",placeholder:"Ex : Photos lifestyle chaleureuses + icônes minimalistes pour les services. Pas de stock générique. Style \"Stripe\" ou \"Linear\" pour les illustrations…",small:true},
+      {id:"photo_style",label:"Si photos : quel style photographique ?",type:"chips",options:["Corporate / business","Lifestyle / quotidien","Artistique / éditorial","Technique / produit","Paysage / architecture","Portraits naturels","Noir & blanc","Pas de photos"],multi:true},
+      {id:"logo",label:"État du logo",type:"chips",options:["Logo existant à conserver","Logo à rafraîchir","Logo à créer","Pas de logo nécessaire"],multi:false},
+      {id:"logo_upload",label:"Téléversez votre logo (si existant)",type:"file",accept:"image/*,.svg,.pdf,.ai,.eps",placeholder:"Formats acceptés : PNG, SVG, PDF, AI, EPS"},
+      {id:"logo_comment",label:"Précisions sur le logo",type:"textarea",placeholder:"Variantes disponibles (couleur, N&B, icône seule…), format vectoriel ?…",small:true},
+      {id:"palette_mode",label:"Avez-vous déjà des couleurs de marque ?",type:"chips",options:["Oui, couleurs définies","Quelques idées","Non, à proposer"],multi:false},
+      {id:"couleurs_picker",label:"Vos couleurs de marque",type:"colorpicker",count:5},
+      {id:"couleurs_hex",label:"Ou saisissez vos codes couleurs",type:"textarea",placeholder:"Ex : Primaire #1B3A5C, Secondaire #C45D3E, Accent #F0D5CC…",small:true},
+      {id:"ambiance_couleur",label:"Ambiance colorimétrique souhaitée",type:"chips",options:["Sombre & contrasté","Clair & aéré","Tons chauds (terracotta, or…)","Tons froids (bleu, gris…)","Pastel & doux","Vif & énergique","Monochrome","Terreux & naturel"],multi:true},
+      {id:"typo",label:"Préférence typographique",type:"chips",options:["Serif (classique, élégant)","Sans-serif (moderne, clean)","Display (caractère, impact)","Pas de préférence"],multi:false},
+      {id:"inspirations",label:"Sites d'inspiration (URLs)",type:"textarea",placeholder:"Listez 2-5 sites dont le design vous plaît et expliquez pourquoi…"},
+      {id:"antiref",label:"Ce que vous ne voulez SURTOUT PAS",type:"textarea",placeholder:"Styles, éléments, couleurs à éviter absolument…",small:true},
+    ]
+  },
+  {
+    id:"fonctionnalites", title:"Fonctionnalités", icon:"⚙️",
+    questions:[
+      {id:"fonctions_essentielles",label:"Fonctionnalités essentielles",type:"chips",options:["Formulaire de contact","Newsletter / Mailing list","Chat en ligne","Réservation / Calendrier","Carte / Localisation","Galerie photo/vidéo","Moteur de recherche interne","Fil d'actualités / Blog"],multi:true},
+      {id:"fonctions_avancees",label:"Fonctionnalités avancées",type:"chips",options:["E-commerce / Panier","Espace client / Login","Paiement en ligne","CRM / Gestion contacts","API / Intégrations tierces","Tableau de bord / Analytics","Multi-auteurs","Automatisations"],multi:true},
+      {id:"integrations",label:"Outils / services à intégrer",type:"chips",options:["Google Analytics","Google Maps","Mailchimp / Brevo","Calendly","Stripe / PayPal","Réseaux sociaux","WhatsApp","HubSpot / CRM"],multi:true},
+      {id:"fonctions_comment",label:"Autres fonctionnalités ou précisions",type:"textarea",placeholder:"Besoins spécifiques non listés…",small:true},
+    ]
+  },
+  {
+    id:"technique", title:"Préférences Techniques", icon:"🛠️",
+    questions:[
+      {id:"cms",label:"Préférence de technologie / CMS",type:"chips",options:["WordPress","Webflow","Shopify","Wix / Squarespace","Sur-mesure (React, Next.js…)","Pas de préférence","Autre"],multi:false},
+      {id:"cms_comment",label:"Précisions techniques",type:"textarea",placeholder:"Contraintes techniques, choix imposés, compétences internes…",small:true},
+      {id:"responsive",label:"Priorité mobile",type:"chips",options:["Mobile-first (priorité smartphone)","Desktop-first (priorité ordinateur)","Importance égale","Application mobile souhaitée aussi"],multi:false},
+      {id:"performance",label:"Exigences particulières",type:"chips",options:["Vitesse de chargement critique","Accessibilité (RGAA/WCAG)","RGPD / Conformité légale","Sécurité renforcée","Haute disponibilité (SLA)"],multi:true},
+      {id:"maintenance",label:"Qui gérera le site après livraison ?",type:"chips",options:["Moi-même / Mon équipe","Le prestataire (contrat maintenance)","À définir"],multi:false},
+      {id:"technique_comment",label:"Autres contraintes techniques",type:"textarea",placeholder:"Infrastructure existante, nom de domaine, emails…",small:true},
+    ]
+  },
+  {
+    id:"budget", title:"Budget & Planning", icon:"📅",
+    questions:[
+      {id:"budget",label:"Fourchette de budget",type:"chips",options:["< 1 000 €","1 000 – 3 000 €","3 000 – 5 000 €","5 000 – 10 000 €","10 000 – 20 000 €","> 20 000 €","À définir ensemble"],multi:false},
+      {id:"budget_comment",label:"Précisions budgétaires",type:"textarea",placeholder:"Budget incluant la rédaction ? Le SEO ? La maintenance annuelle ?…",small:true},
+      {id:"deadline",label:"Date de mise en ligne souhaitée",type:"text",placeholder:"Ex : Mi-juin 2026, Pas de deadline stricte…"},
+      {id:"urgence",label:"Niveau d'urgence",type:"chips",options:["Pas pressé, on fait bien","Délai normal (6-12 semaines)","Assez urgent (< 6 semaines)","Très urgent (< 3 semaines)"],multi:false},
+      {id:"decision",label:"Qui prend les décisions finales ?",type:"chips",options:["Moi seul(e)","Moi + associé(e)","Un comité / équipe","Le client final (je suis intermédiaire)"],multi:false},
+      {id:"planning_comment",label:"Autres informations de planning",type:"textarea",placeholder:"Événement lié au lancement, contraintes de calendrier…",small:true},
+    ]
+  },
+  {
+    id:"seo", title:"SEO & Marketing", icon:"📈",
+    questions:[
+      {id:"seo_importance",label:"Importance du référencement naturel (SEO)",type:"chips",options:["Critique (source principale de trafic)","Important mais pas prioritaire","Secondaire","Pas concerné"],multi:false},
+      {id:"mots_cles",label:"Mots-clés ou thématiques cibles",type:"textarea",placeholder:"Ex : 'fiduciaire Genève', 'création entreprise Suisse', 'architecte intérieur Paris'…"},
+      {id:"concurrents",label:"Vos principaux concurrents en ligne",type:"textarea",placeholder:"URLs de 2-3 concurrents et ce que vous pensez de leurs sites…",small:true},
+      {id:"marketing_canaux",label:"Canaux marketing utilisés",type:"chips",options:["Google Ads","Réseaux sociaux (organique)","Social Ads (Meta, LinkedIn…)","Email marketing","Bouche-à-oreille","Relations presse","Aucun pour l'instant"],multi:true},
+      {id:"seo_comment",label:"Précisions SEO / Marketing",type:"textarea",placeholder:"Stratégie existante, résultats actuels, attentes…",small:true},
+    ]
+  },
+];
+
+// ─── STATE ───
+let data = {};
+let activeSection = 0;
+let submitted = false;
+
+function val(id) { return data[id]; }
+function setVal(id, v) { data[id] = v; render(); }
+
+// ─── RENDER HELPERS ───
+function renderChips(q) {
+  const selected = data[q.id] || (q.multi ? [] : "");
+  return `<div class="chips">${q.options.map(opt => {
+    const isSel = q.multi ? (selected||[]).includes(opt) : selected === opt;
+    return `<button type="button" class="chip${isSel?' selected':''}" onclick="toggleChip('${q.id}',\`${opt}\`,${q.multi})">${opt}</button>`;
+  }).join('')}</div>`;
+}
+
+function renderColorPicker(q) {
+  const colors = data[q.id] || Array(q.count||5).fill("");
+  const labels = ["Primaire","Secondaire","Accent","Fond","Texte"];
+  return `<div class="color-picker-row">${colors.map((c,i) =>
+    `<div class="color-swatch-wrapper">
+      <div class="color-swatch${c?'':' empty'}" style="${c?`background:${c};border-color:${c}`:''}" >
+        <input type="color" value="${c||'#c45d3e'}" onchange="setColor('${q.id}',${i},this.value)">
       </div>
+      <span class="color-hex-label">${c||labels[i]||'#'+(i+1)}</span>
+    </div>`
+  ).join('')}</div>`;
+}
+
+function renderFile(q) {
+  const f = data[q.id];
+  if (f && f.name) {
+    const isImg = f.type && f.type.startsWith('image/');
+    return `<div class="file-preview">
+      ${isImg?`<img src="${f.dataUrl}" alt="Aperçu">`:''}
+      <div class="file-preview-info">
+        <div class="file-preview-name">${f.name}</div>
+        <div class="file-preview-size">${(f.size/1024).toFixed(1)} Ko</div>
+      </div>
+      <button class="file-remove" onclick="setVal('${q.id}',null)">✕</button>
+    </div>`;
+  }
+  return `<div class="file-upload-zone">
+    <input type="file" accept="${q.accept||'image/*'}" onchange="handleFile('${q.id}',this)">
+    <div class="file-upload-icon">📎</div>
+    <div class="file-upload-text">${q.placeholder||'Glissez un fichier ou cliquez'}</div>
+  </div>`;
+}
+
+function renderRepeater(q) {
+  const items = data[q.id] || [];
+  let html = q.hint ? `<div class="question-hint">${q.hint}</div>` : '';
+  items.forEach((item, idx) => {
+    html += `<div class="repeater-item">
+      <button class="repeater-remove" onclick="removeRepeaterItem('${q.id}',${idx})">✕</button>`;
+    q.fields.forEach(f => {
+      if (f.type === 'chips') {
+        const sel = item[f.id] || '';
+        html += `<div style="margin-bottom:10px"><span class="repeater-label">${f.label}</span>
+          <div class="chips">${f.options.map(opt => {
+            const isSel = sel === opt;
+            return `<button type="button" class="chip${isSel?' selected':''}" onclick="setRepeaterChip('${q.id}',${idx},'${f.id}',\`${opt}\`)">${opt}</button>`;
+          }).join('')}</div></div>`;
+      } else {
+        const isTA = f.type === 'textarea';
+        const tag = isTA ? 'textarea' : 'input';
+        const cls = isTA && f.small ? ' class="small"' : '';
+        html += `<div style="margin-bottom:10px"><span class="repeater-label">${f.label}</span>
+          <${tag}${cls} type="text" placeholder="${f.placeholder||''}" value="${item[f.id]||''}" 
+            oninput="setRepeaterField('${q.id}',${idx},'${f.id}',this.value)"${isTA?'':''}>${isTA?(item[f.id]||''):''}</${isTA?'textarea':''}>
+          ${isTA?'':''}
+        </div>`;
+      }
+    });
+    html += `</div>`;
+  });
+  html += `<button class="repeater-add" onclick="addRepeaterItem('${q.id}')">＋ Ajouter un service</button>`;
+  return html;
+}
+
+function renderQuestion(q) {
+  let inner = '';
+  if (q.type === 'text') inner = `<input type="text" placeholder="${q.placeholder||''}" value="${data[q.id]||''}" oninput="setVal('${q.id}',this.value)">`;
+  else if (q.type === 'textarea') inner = `<textarea class="${q.small?'small':''}" placeholder="${q.placeholder||''}" oninput="setVal('${q.id}',this.value)">${data[q.id]||''}</textarea>`;
+  else if (q.type === 'chips') inner = renderChips(q);
+  else if (q.type === 'colorpicker') inner = renderColorPicker(q);
+  else if (q.type === 'file') inner = renderFile(q);
+  else if (q.type === 'repeater') inner = renderRepeater(q);
+  const hint = (q.hint && q.type !== 'repeater') ? `<span class="question-hint">${q.hint}</span>` : '';
+  return `<div class="question"><label class="question-label">${q.label}</label>${hint}${inner}</div>`;
+}
+
+// ─── COMPUTE ───
+function countFilled() {
+  let filled = 0, total = 0;
+  SECTIONS.forEach(sec => sec.questions.forEach(q => {
+    total++;
+    const v = data[q.id];
+    if (!v) return;
+    if (q.type === 'file') { if(v.name) filled++; return; }
+    if (q.type === 'colorpicker') { if(Array.isArray(v) && v.some(c=>c)) filled++; return; }
+    if (q.type === 'repeater') { if(Array.isArray(v) && v.length>0) filled++; return; }
+    if (Array.isArray(v)) { if(v.length>0) filled++; return; }
+    if (typeof v === 'string' && v.trim()) filled++;
+  }));
+  return {filled,total};
+}
+function sectionHasData(sec) {
+  return sec.questions.some(q => {
+    const v = data[q.id];
+    if(!v) return false;
+    if(q.type==='file') return !!v.name;
+    if(q.type==='colorpicker') return Array.isArray(v)&&v.some(c=>c);
+    if(q.type==='repeater') return Array.isArray(v)&&v.length>0;
+    if(Array.isArray(v)) return v.length>0;
+    return typeof v==='string'&&v.trim()!=='';
+  });
+}
+
+// ─── BRIEF GENERATOR ───
+function generateBrief() {
+  let lines = [];
+  lines.push("══════════════════════════════════════════");
+  lines.push("       BRIEF DE CRÉATION DE SITE WEB");
+  lines.push("══════════════════════════════════════════");
+  lines.push("");
+  const d = new Date();
+  lines.push("Généré le " + d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}));
+  lines.push("");
+
+  SECTIONS.forEach(sec => {
+    const items = [];
+    sec.questions.forEach(q => {
+      const v = data[q.id];
+      if(!v) return;
+      if(q.type==='file') { if(v.name) items.push({label:q.label,display:"Fichier fourni : "+v.name}); return; }
+      if(q.type==='colorpicker') {
+        const labels=["Primaire","Secondaire","Accent","Fond","Texte"];
+        const filled=v.map((c,i)=>c?`${labels[i]||'#'+(i+1)}: ${c}`:null).filter(Boolean);
+        if(filled.length) items.push({label:q.label,display:filled.join(", ")});
+        return;
+      }
+      if(q.type==='repeater') {
+        if(!Array.isArray(v)||v.length===0) return;
+        v.forEach((item,idx)=>{
+          const parts=[];
+          q.fields.forEach(f=>{if(item[f.id]) parts.push(`${f.label}: ${item[f.id]}`);});
+          if(parts.length) items.push({label:`Service ${idx+1}`,display:parts.join(" | ")});
+        });
+        return;
+      }
+      const display = Array.isArray(v)?v.join(", "):v;
+      if(display && (typeof display!=='string'||display.trim())) items.push({label:q.label,display});
+    });
+    if(!items.length) return;
+    lines.push("");
+    lines.push(`▸ ${sec.icon} ${sec.title.toUpperCase()}`);
+    lines.push("─".repeat(44));
+    items.forEach(it=>{
+      lines.push(`${it.label} :`);
+      lines.push(`  → ${it.display}`);
+      lines.push("");
+    });
+  });
+
+  lines.push("");
+  lines.push("══════════════════════════════════════════");
+  lines.push("             FIN DU BRIEF");
+  lines.push("══════════════════════════════════════════");
+  return lines.join("\n");
+}
+
+// ─── ACTIONS ───
+window.toggleChip = function(id, opt, multi) {
+  if (multi) {
+    const arr = Array.isArray(data[id]) ? [...data[id]] : [];
+    const idx = arr.indexOf(opt);
+    if (idx > -1) arr.splice(idx,1); else arr.push(opt);
+    setVal(id, arr);
+  } else {
+    setVal(id, data[id] === opt ? "" : opt);
+  }
+};
+window.setColor = function(id, idx, color) {
+  const arr = Array.isArray(data[id]) ? [...data[id]] : Array(5).fill("");
+  arr[idx] = color;
+  setVal(id, arr);
+};
+window.handleFile = function(id, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    setVal(id, {name:file.name, size:file.size, type:file.type, dataUrl:e.target.result});
+  };
+  reader.readAsDataURL(file);
+};
+window.addRepeaterItem = function(id) {
+  const arr = Array.isArray(data[id]) ? [...data[id]] : [];
+  arr.push({});
+  setVal(id, arr);
+};
+window.removeRepeaterItem = function(id, idx) {
+  const arr = [...(data[id]||[])];
+  arr.splice(idx,1);
+  setVal(id, arr);
+};
+window.setRepeaterField = function(id, idx, field, value) {
+  const arr = [...(data[id]||[])];
+  arr[idx] = {...(arr[idx]||{}), [field]: value};
+  data[id] = arr; // no re-render to avoid cursor jump
+};
+window.setRepeaterChip = function(id, idx, field, opt) {
+  const arr = [...(data[id]||[])];
+  const cur = arr[idx]?.[field];
+  arr[idx] = {...(arr[idx]||{}), [field]: cur===opt ? '' : opt};
+  setVal(id, arr);
+};
+
+function downloadBrief() {
+  const brief = generateBrief();
+  const blob = new Blob([brief], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const nom = (data.nom_entreprise || 'brief').replace(/[^a-zA-Z0-9àâéèêëïôùûç\s-]/g,'').replace(/\s+/g,'-').toLowerCase();
+  a.download = `brief-web-${nom}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  // show toast
+  const toast = document.getElementById('toast');
+  toast.classList.add('visible');
+  setTimeout(()=>toast.classList.remove('visible'), 2500);
+  // show thank you
+  submitted = true;
+  render();
+}
+
+function resetAll() {
+  if (confirm("Effacer toutes les réponses ?")) { data = {}; submitted = false; render(); }
+}
+
+function scrollToSec(idx) {
+  activeSection = idx;
+  render();
+  const el = document.getElementById('sec-'+idx);
+  if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ─── MAIN RENDER ───
+function render() {
+  const {filled,total} = countFilled();
+  const pct = Math.round((filled/total)*100);
+  const app = document.getElementById('app');
+
+  if (submitted) {
+    app.innerHTML = `
+      <div class="thankyou">
+        <span class="check">✓</span>
+        <h2>Merci !</h2>
+        <p>Votre brief a été téléchargé avec succès. Envoyez le fichier <strong>.txt</strong> par email et nous reviendrons vers vous rapidement.</p>
+        <button class="btn btn-secondary" onclick="submitted=false;render()">← Modifier mes réponses</button>
+      </div>`;
+    return;
+  }
+
+  let html = `
+    <div class="header">
+      <h1>Brief de création web</h1>
+      <p>Remplissez ce questionnaire pour nous aider à bien comprendre votre projet. Prenez votre temps, chaque détail compte.</p>
     </div>
-    <div ip="content">
-      <div class="post-container">
-        <div class="post">
-          <div class="post-author">
-            <img src="me.png">
-            <span>Me</span>
-          </div>
-          <p class="post-date">Today</p>
-          <h3 class="post-title">Becoming a web developer</h3>
-          <div class="post-content">
-            <p>Je suis en train de <strong><em><a href="https://www.google.com">réaliser</a></em></strong> un site internet grâce au logiciel atom</p>
-            <p>Il y a quelques mois je me suis inscris sur mimo</p>
-          </div>
-        </div>
-      </div>
-      <div class="post-container">
-        <div class="post">
-          <div class="post-author">
-            <img src="max.jpg">
-            <span>Max</span>
-            <p class="post-date">Today</p>
-            <h3 class="post-title">How do you work?</h3>
-            <div class="post-content">
-              <p>Can you explain me how you work on it</p>
-            </div>
-          </div>
-        </div>
-        <div class="post-container">
-        <div class="post">
-          <div class="post-author">
-            <img src="me.png">
-            <span>Me</span>
-          </div>
-          <p class="post-date">Today</p>
-          <h3 class="post-title">Becoming a web developer</h3>
-          <div class="post-content">
-            <p>Salut comment ça se passe sur ce site? on dirait que tout vas bien et que tu apprend bien dis moi !!! C'est bien, bonne continuation!!!/p>
-            <p>Il y a quelques mois je me suis inscris sur mimo</p>
-          </div>
-        </div>
-      </div>
-      </div>
+    <div class="progress-bar">
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-label">${filled} / ${total} champs renseignés — ${pct}%</div>
     </div>
-    <Div id="footer">
-      <div class="container">
-        <div class="column">
-          <h4>My links</h4>
-          <p>
-            <a href="https://www.instagram.com/maximeravat/">instagram</a><br>
-            <a href="https://www.facebook.com/maxime.ravat1">facebook</a>
-          </p>
-        </div>
-        <div class="column">
-          <h4>My story</h4>
-          <p>Hi I'm Maxime a french marketer</p>
-        </div>
+    <div class="nav-pills">
+      ${SECTIONS.map((s,i)=>`<button class="nav-pill${activeSection===i?' active':''}${sectionHasData(s)&&activeSection!==i?' has-data':''}" onclick="scrollToSec(${i})">${s.icon} ${s.title}</button>`).join('')}
+    </div>`;
+
+  SECTIONS.forEach((sec,i) => {
+    html += `<div class="section" id="sec-${i}" onclick="activeSection=${i}">
+      <div class="section-header">
+        <span class="section-icon">${sec.icon}</span>
+        <span class="section-title">${sec.title}</span>
       </div>
-    </div>
-  </body>
+      ${sec.intro?`<p style="color:var(--muted);font-size:.88rem;margin-bottom:20px;margin-top:-8px">${sec.intro}</p>`:''}
+      ${sec.questions.map(q=>renderQuestion(q)).join('')}
+    </div>`;
+  });
+
+  html += `<div class="actions">
+    <button class="btn btn-ghost" onclick="resetAll()">↺ Tout effacer</button>
+    <button class="btn btn-primary" onclick="downloadBrief()">📥 Télécharger mon brief</button>
+  </div>`;
+
+  app.innerHTML = html;
+}
+
+// ─── INIT ───
+render();
+</script>
+</body>
 </html>
